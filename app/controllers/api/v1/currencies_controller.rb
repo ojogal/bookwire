@@ -39,12 +39,10 @@ class Api::V1::CurrenciesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_currency
       @currency = Currency.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
     def currency_params
       params.require(:currency).permit(:number, :symbol, :code)
     end

@@ -39,12 +39,10 @@ class Api::V1::UnitTypesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_unit_type
       @unit_type = UnitType.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
     def unit_type_params
       params.require(:unit_type).permit(:title, :description)
     end

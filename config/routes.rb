@@ -13,6 +13,7 @@ Rails.application.routes.draw do
       resources :roles
       resources :booking_statuses
       resources :currencies
+      resources :tokens, only: [:create]
     end
   end
 end
