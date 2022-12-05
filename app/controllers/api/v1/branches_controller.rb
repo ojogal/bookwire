@@ -1,4 +1,4 @@
-class BranchesController < ApplicationController
+class Api::V1::BranchesController < ApplicationController
   before_action :set_branch, only: %i[ show update destroy ]
 
   # GET /api/v1/branches

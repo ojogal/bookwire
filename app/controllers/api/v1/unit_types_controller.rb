@@ -1,4 +1,4 @@
-class UnitTypesController < ApplicationController
+class Api::V1::UnitTypesController < ApplicationController
   before_action :set_unit_type, only: %i[ show update destroy ]
 
   # GET /api/v1/unit_types
