@@ -8,7 +8,7 @@ module DataValidation
   end
 
   def print_create
-    Rails.logger.debug { <<-TEXT }
+    print <<-TEXT
 
     Thank you for using database!
     P.S. Kozhukhar gay!

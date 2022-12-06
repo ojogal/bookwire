@@ -4,8 +4,6 @@ module Api
   module V1
     class BookingUnitsController < ApplicationController
       before_action :set_booking_unit!, only: %i[show update destroy]
-      before_action :authorize_booking_unit!
-      after_action :verify_authorized
 
       # GET /api/v1/booking_units
       def index
@@ -52,10 +50,6 @@ module Api
 
       def booking_unit_params
         params.require(:booking_unit).permit(:starts_at, :ends_at)
-      end
-
-      def authorize_booking_unit!
-        authorize(@booking_unit || BookingUnit)
       end
     end
   end
