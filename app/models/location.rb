@@ -1,4 +1,5 @@
-class Location < ApplicationRecord
+# frozen_string_literal: true
 
+class Location < ApplicationRecord
   has_many :branches, dependent: :destroy
 end

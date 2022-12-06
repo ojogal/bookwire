@@ -1,49 +1,56 @@
-class Api::V1::UnitsController < ApplicationController
-  before_action :set_unit, only: %i[ show update destroy ]
+# frozen_string_literal: true
 
-  # GET /api/v1/units
-  def index
-    @units = Unit.all
+module Api
+  module V1
+    class UnitsController < ApplicationController
+      before_action :set_unit, only: %i[show update destroy]
 
-    render json: @units
-  end
+      # GET /api/v1/units
+      def index
+        @units = Unit.all
 
-  # GET /api/v1/units/1
-  def show
-    render json: @unit
-  end
+        render json: @units
+      end
 
-  # POST /api/v1/units
-  def create
-    @unit = Unit.new(unit_params)
+      # GET /api/v1/units/1
+      def show
+        render json: @unit
+      end
 
-    if @unit.save
-      render json: @unit, status: :created, location: @unit
-    else
-      render json: @unit.errors, status: :unprocessable_entity
+      # POST /api/v1/units
+      def create
+        @unit = Unit.new(unit_params)
+
+        if @unit.save
+          render json: @unit, status: :created, location: @unit
+        else
+          render json: @unit.errors, status: :unprocessable_entity
+        end
+      end
+
+      # PATCH/PUT /api/v1/units/1
+      def update
+        if @unit.update(unit_params)
+          render json: @unit
+        else
+          render json: @unit.errors, status: :unprocessable_entity
+        end
+      end
+
+      # DELETE /api/v1/units/1
+      def destroy
+        @unit.destroy
+      end
+
+      private
+
+      def set_unit
+        @unit = Unit.find(params[:id])
+      end
+
+      def unit_params
+        params.require(:unit).permit(:seats, :floor)
+      end
     end
   end
-
-  # PATCH/PUT /api/v1/units/1
-  def update
-    if @unit.update(unit_params)
-      render json: @unit
-    else
-      render json: @unit.errors, status: :unprocessable_entity
-    end
-  end
-
-  # DELETE /api/v1/units/1
-  def destroy
-    @unit.destroy
-  end
-
-  private
-    def set_unit
-      @unit = Unit.find(params[:id])
-    end
-
-    def unit_params
-      params.require(:unit).permit(:seats, :floor)
-    end
 end

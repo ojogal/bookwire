@@ -1,0 +1,32 @@
+inherit_from: .rubocop_todo.yml
+
+require: 
+  - rubocop-performance
+  - rubocop-rails
+
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.1
+
+Style/Documentation:
+  Enabled: false
+
+Layout/TrailingEmptyLines:
+  Exclude:
+    - 'db/seeds.rb'
+
+# This cop supports safe autocorrection (--autocorrect).
+Lint/RedundantCopDisableDirective:
+  Exclude:
+    - 'db/seeds.rb'
+
+Lint/UselessAssignment:
+  Exclude:
+    - 'db/seeds.rb'
+
+# Configuration parameters: EnforcedStyle.
+# SupportedStyles: slashes, arguments
+Rails/FilePath:
+  EnforcedStyle: arguments
+  Exclude:
+    - 'config/environments/development.rb'
