@@ -41,17 +41,23 @@ gem 'bootsnap', require: false
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'debug', platforms: %i[mri mingw x64_mingw]
+
+  gem "rspec", "~> 3.12"
+  
 end
 
 group :development do
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
+  gem 'rubocop', '~> 1.39'
+
+  gem 'rubocop-rails', '~> 2.17'
+
+  gem 'rubocop-performance', '~> 1.15'
 end
+
+gem 'jwt', '~> 2.5'
 
 gem 'pundit', '~> 2.2'
 
-gem 'rubocop', '~> 1.39'
-
-gem 'rubocop-rails', '~> 2.17'
-
-gem 'rubocop-performance', '~> 1.15'
+gem "openssl", "~> 3.0"

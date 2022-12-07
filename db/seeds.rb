@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# ::SkipsModelValidations
 Payment.delete_all
 Booking.delete_all
 User.delete_all
@@ -101,7 +100,7 @@ branch1 = Branch.create(
 )
 
 branch2 = Branch.create(
-  alias: 'No paradise and coffee',
+  alias: 'Not paradise and coffee',
   floors: 2,
   brand_id: brand2.id,
   location_id: location2.id
