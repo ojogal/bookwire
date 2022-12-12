@@ -2,6 +2,6 @@
 
 class ApplicationController < ActionController::API
   include Authenticable
+  include Authorizable
   include Pundit
-  include Authorization
 end

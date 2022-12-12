@@ -4,17 +4,19 @@ module Api
   module V1
     class CurrenciesController < ApplicationController
       before_action :set_currency, only: %i[show update destroy]
+      before_action :check_current_user, only: %i[create update destroy]
 
       # GET /api/v1/currencies
       def index
         @currencies = Currency.all
-
-        render json: @currencies
+        options = { include: [:payments] }
+        render json: CurrencySerializer.new(@currencies, options).serializable_hash.to_json
       end
 
       # GET /api/v1/currencies/1
       def show
-        render json: @currency
+        options = { include: [:payments] }
+        render json: CurrencySerializer.new(@currency, options).serializable_hash.to_json
       end
 
       # POST /api/v1/currencies
@@ -22,7 +24,7 @@ module Api
         @currency = Currency.new(currency_params)
 
         if @currency.save
-          render json: @currency, status: :created, location: @currency
+          render json: CurrencySerializer.new(@currency).serializable_hash.to_json, status: :created, location: @currency
         else
           render json: @currency.errors, status: :unprocessable_entity
         end
@@ -31,7 +33,7 @@ module Api
       # PATCH/PUT /api/v1/currencies/1
       def update
         if @currency.update(currency_params)
-          render json: @currency
+          render json: CurrencySerializer.new(@currency).serializable_hash.to_json
         else
           render json: @currency.errors, status: :unprocessable_entity
         end

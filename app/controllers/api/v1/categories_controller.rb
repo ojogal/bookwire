@@ -4,17 +4,19 @@ module Api
   module V1
     class CategoriesController < ApplicationController
       before_action :set_category, only: %i[show update destroy]
+      before_action :check_current_user, only: %i[create update destroy]
 
       # GET /api/v1/categories
       def index
         @categories = Category.all
-
-        render json: @categories
+        options = { include: [:brands] }
+        render json: CategorySerializer.new(@categories, options).serializable_hash.to_json
       end
 
       # GET /api/v1/categories/1
       def show
-        render json: @category
+        options = { include: [:brands] }
+        render json: CategorySerializer.new(@category, options).serializable_hash.to_json
       end
 
       # POST /api/v1/categories
@@ -22,7 +24,7 @@ module Api
         @category = Category.new(category_params)
 
         if @category.save
-          render json: @category, status: :created, location: @category
+          render json: CategorySerializer.new(@category).serializable_hash.to_json, status: :created, location: @category
         else
           render json: @category.errors, status: :unprocessable_entity
         end
@@ -31,7 +33,7 @@ module Api
       # PATCH/PUT /api/v1/categories/1
       def update
         if @category.update(category_params)
-          render json: @category
+          render json: CategorySerializer.new(@category).serializable_hash.to_json
         else
           render json: @category.errors, status: :unprocessable_entity
         end

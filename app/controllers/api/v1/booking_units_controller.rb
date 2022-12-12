@@ -4,17 +4,19 @@ module Api
   module V1
     class BookingUnitsController < ApplicationController
       before_action :set_booking_unit!, only: %i[show update destroy]
+      before_action :check_owner, only: %i[create update destroy]
 
       # GET /api/v1/booking_units
       def index
         @booking_units = BookingUnit.all
-
-        render json: @booking_units
+        options = { include: [:booking, :unit] }
+        render json: BookingUnitSerializer.new(@booking_units, options).serializable_hash.to_json
       end
 
       # GET /api/v1/booking_units/1
       def show
-        render json: @booking_unit
+        options = { include: [:booking, :unit] }
+        render json: BookingUnitSerilizer.new(@booking_unit, options).serializable_hash.to_json
       end
 
       # POST /api/v1/booking_units
@@ -22,7 +24,7 @@ module Api
         @booking_unit = BookingUnit.new(booking_unit_params)
 
         if @booking_unit.save
-          render json: @booking_unit, status: :created, location: @booking_unit
+          render json: BookingUnitSerilizer.new(@booking_unit).serializable_hash.to_json, status: :created, location: @booking_unit
         else
           render json: @booking_unit.errors, status: :unprocessable_entity
         end
@@ -31,7 +33,7 @@ module Api
       # PATCH/PUT /api/v1/booking_units/1
       def update
         if @booking_unit.update(booking_unit_params)
-          render json: @booking_unit
+          render json: BookingUnitSerilizer.new(@booking_unit).serializable_hash.to_json
         else
           render json: @booking_unit.errors, status: :unprocessable_entity
         end

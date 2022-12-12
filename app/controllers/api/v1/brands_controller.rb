@@ -4,17 +4,19 @@ module Api
   module V1
     class BrandsController < ApplicationController
       before_action :set_brand, only: %i[show update destroy]
+      before_action :check_current_user, only: %i[create update destroy]
 
       # GET /api/v1/brands
       def index
         @brands = Brand.all
-
-        render json: @brands
+        options = { include: [:branches, :category] }
+        render json: BrandSerializer.new(@brands, options).serializable_hash.to_json
       end
 
       # GET /api/v1/brands/1
       def show
-        render json: @brand
+        options = { include: [:branches, :category] }
+        render json: BrandSerializer.new(@brand, options).serializable_hash.to_json
       end
 
       # POST /api/v1/brands
@@ -22,7 +24,7 @@ module Api
         @brand = Brand.new(brand_params)
 
         if @brand.save
-          render json: @brand, status: :created, location: @brand
+          render json: BrandSerializer.new(@brand).serializable_hash.to_json, status: :created, location: @brand
         else
           render json: @brand.errors, status: :unprocessable_entity
         end
@@ -31,7 +33,7 @@ module Api
       # PATCH/PUT /api/v1/brands/1
       def update
         if @brand.update(brand_params)
-          render json: @brand
+          render json: BrandSerializer.new(@brand).serializable_hash.to_json
         else
           render json: @brand.errors, status: :unprocessable_entity
         end

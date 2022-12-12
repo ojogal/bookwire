@@ -4,17 +4,19 @@ module Api
   module V1
     class UnitTypesController < ApplicationController
       before_action :set_unit_type, only: %i[show update destroy]
+      before_action :check_owner, only: %i[create update destroy]
 
       # GET /api/v1/unit_types
       def index
         @unit_types = UnitType.all
-
-        render json: @unit_types
+        options = { include: [:users] }
+        render json: UnitTypeSerializer.new(@unit_types, options).serializable_hash.to_json
       end
 
       # GET /api/v1/unit_types/1
       def show
-        render json: @unit_type
+        options = { include: [:users] }
+        render json: UnitTypeSerializer.new(@unit_type, options).serializable_hash.to_json
       end
 
       # POST /api/v1/unit_types
@@ -22,7 +24,7 @@ module Api
         @unit_type = UnitType.new(unit_type_params)
 
         if @unit_type.save
-          render json: @unit_type, status: :created, location: @unit_type
+          render json: UnitTypeSerializer.new(@unit_type).serializable_hash.to_json, status: :created, location: @unit_type
         else
           render json: @unit_type.errors, status: :unprocessable_entity
         end
@@ -31,7 +33,7 @@ module Api
       # PATCH/PUT /api/v1/unit_types/1
       def update
         if @unit_type.update(unit_type_params)
-          render json: @unit_type
+          render json: UnitTypeSerializer.new(@unit_type).serializable_hash.to_json
         else
           render json: @unit_type.errors, status: :unprocessable_entity
         end

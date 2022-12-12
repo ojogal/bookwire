@@ -4,17 +4,19 @@ module Api
   module V1
     class BranchesController < ApplicationController
       before_action :set_branch, only: %i[show update destroy]
+      before_action :check_current_user, only: %i[create update destroy]
 
       # GET /api/v1/branches
       def index
         @branches = Branch.all
-
-        render json: @branches
+        options = { include: [:units, :brand, :location] }
+        render json: BranchSerializer.new(@branches, options).serializable_hash.to_json
       end
 
       # GET /api/v1/branches/1
       def show
-        render json: @branch
+        options = { include: [:units, :brand, :location] }
+        render json: BranchSerializer.new(@branch, options).serializable_hash.to_json
       end
 
       # POST /api/v1/branches
@@ -22,7 +24,7 @@ module Api
         @branch = Branch.new(branch_params)
 
         if @branch.save
-          render json: @branch, status: :created, location: @branch
+          render json: BranchSerializer.new(@branch).serializable_hash.to_json, status: :created, location: @branch
         else
           render json: @branch.errors, status: :unprocessable_entity
         end
@@ -31,7 +33,7 @@ module Api
       # PATCH/PUT /api/v1/branches/1
       def update
         if @branch.update(branch_params)
-          render json: @branch
+          render json: BranchSerializer.new(@branch).serializable_hash.to_json
         else
           render json: @branch.errors, status: :unprocessable_entity
         end

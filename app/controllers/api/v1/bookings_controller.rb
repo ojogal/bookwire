@@ -4,19 +4,22 @@ module Api
   module V1
     class BookingsController < ApplicationController
       before_action :set_booking!, only: %i[show update destroy]
+      before_action :check_current_user, only: %i[create update destroy]
+      
       before_action :authorize_booking!
       after_action :verify_authorized
 
       # GET /api/v1/bookings
       def index
         @bookings = Booking.all
-
-        render json: @bookings
+        options = { include: [:booking_status, :user] }
+        render json: BookingSerializer.new(@bookings, options).serializable_hash.to_json
       end
 
       # GET /api/v1/bookings/1
       def show
-        render json: @booking
+        options = { include: [:booking_status, :user] }
+        render json: BookingSerializer.new(@booking, options).serializable_hash.to_json
       end
 
       # POST /api/v1/bookings
@@ -24,7 +27,7 @@ module Api
         @booking = Booking.new(booking_params)
 
         if @booking.save
-          render json: @booking, status: :created, location: @booking
+          render json: BookingSerializer.new(@booking).serializable_hash.to_json, status: :created, location: @booking
         else
           render json: @booking.errors, status: :unprocessable_entity
         end
@@ -33,7 +36,7 @@ module Api
       # PATCH/PUT /api/v1/bookings/1
       def update
         if @booking.update(booking_params)
-          render json: @booking
+          render json: BookingSerializer.new(@booking).serializable_hash.to_json
         else
           render json: @booking.errors, status: :unprocessable_entity
         end

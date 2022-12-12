@@ -4,17 +4,19 @@ module Api
   module V1
     class LocationsController < ApplicationController
       before_action :set_location, only: %i[show update destroy]
+      before_action :check_current_user, only: %i[create update destroy]
 
       # GET /api/v1/locations
       def index
         @locations = Location.all
-
-        render json: @locations
+        options = { include: [:branches] }
+        render json: LocationSerializer.new(@locations, options).serializable_hash.to_json
       end
 
       # GET /api/v1/locations/1
       def show
-        render json: @location
+        options = { include: [:branches] }
+        render json: LocationSerializer.new(@location, options).serializable_hash.to_json
       end
 
       # POST /api/v1/locations
@@ -22,7 +24,7 @@ module Api
         @location = Location.new(location_params)
 
         if @location.save
-          render json: @location, status: :created, location: @location
+          render json: LocationSerializer.new(@location).serializable_hash.to_json, status: :created, location: @location
         else
           render json: @location.errors, status: :unprocessable_entity
         end
@@ -31,7 +33,7 @@ module Api
       # PATCH/PUT /api/v1/locations/1
       def update
         if @location.update(location_params)
-          render json: @location
+          render json: LocationSerializer.new(@location).serializable_hash.to_json
         else
           render json: @location.errors, status: :unprocessable_entity
         end

@@ -4,17 +4,19 @@ module Api
   module V1
     class RolesController < ApplicationController
       before_action :set_role, only: %i[show update destroy]
+      before_action :check_current_user, only: %i[create update destroy]
 
       # GET /api/v1/roles
       def index
         @roles = Role.all
-
-        render json: @roles
+        options = { include: [:users] }
+        render json: RoleSerializer.new(@roles, options).serializable_hash.to_json
       end
 
       # GET /api/v1/roles/1
       def show
-        render json: @role
+        options = { include: [:users] }
+        render json: RoleSerializer.new(@role, options).serializable_hash.to_json
       end
 
       # POST /api/v1/roles
@@ -22,7 +24,7 @@ module Api
         @role = Role.new(role_params)
 
         if @role.save
-          render json: @role, status: :created, location: @role
+          render json: RoleSerializer.new(@role).serializable_hash.to_json, status: :created, location: @role
         else
           render json: @role.errors, status: :unprocessable_entity
         end
@@ -31,7 +33,7 @@ module Api
       # PATCH/PUT /api/v1/roles/1
       def update
         if @role.update(role_params)
-          render json: @role
+          render json: RoleSerializer.new(@role).serializable_hash.to_json
         else
           render json: @role.errors, status: :unprocessable_entity
         end
